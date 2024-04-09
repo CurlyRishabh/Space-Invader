@@ -5,7 +5,11 @@ from player import Player
 
 class Game:
     def __init__(self):
-        player_sprite = Player((SCREEN_WIDTH / 2, SCREEN_HEIGHT))
+        player_sprite = Player(
+            (SCREEN_WIDTH / 2, SCREEN_HEIGHT),
+            SCREEN_WIDTH,
+            speed=5
+        )
         self.player = pygame.sprite.GroupSingle(player_sprite)
 
     def run(self):
@@ -33,8 +37,8 @@ def execute():
 
 if __name__ == '__main__':
     pygame.init()
-    SCREEN_WIDTH = 750
-    SCREEN_HEIGHT = 700
+    SCREEN_WIDTH = 600
+    SCREEN_HEIGHT = 600
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Some game")
     clock = pygame.time.Clock()
