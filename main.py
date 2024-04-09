@@ -14,8 +14,9 @@ class Game:
 
     def run(self):
         'update/draw sprite groups'
-        self.player.draw(screen)
         self.player.update()
+        self.player.sprite.lasers.draw(screen)
+        self.player.draw(screen)
 
 
 def execute():
