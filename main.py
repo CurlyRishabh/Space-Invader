@@ -5,12 +5,13 @@ from player import Player
 
 class Game:
     def __init__(self):
-        player_sprite = Player((300, 300))
+        player_sprite = Player((SCREEN_WIDTH / 2, SCREEN_HEIGHT))
         self.player = pygame.sprite.GroupSingle(player_sprite)
 
     def run(self):
         'update/draw sprite groups'
         self.player.draw(screen)
+        self.player.update()
 
 
 def execute():
@@ -37,5 +38,4 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Some game")
     clock = pygame.time.Clock()
-    
     execute()
