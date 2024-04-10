@@ -19,7 +19,7 @@ class Game:
         self.shape = obstacle.shape
         self.block_size = 6
         self.blocks = pygame.sprite.Group()
-        self.obstacle_number = 4
+        self.obstacle_number = 3
         self.obstacle_x_positions = [
             float((num + (1/self.obstacle_number))
                   *
@@ -32,7 +32,10 @@ class Game:
                                       )
 
         # alien
-        alien_sprite = Alien((100, 100))
+        alien_sprite = Alien("green",
+                             (100, 100),
+                             SCREEN_HEIGHT,
+                             SCREEN_WIDTH)
         self.alien = pygame.sprite.GroupSingle()
         self.alien.add(alien_sprite)
 
@@ -51,13 +54,48 @@ class Game:
         for offset_x in offset:
             self.create_obstacle(x_start, y_start, offset_x)
 
+    def collision_check(self):
+        # player laser
+        if self.player.sprite.lasers:
+            for laser in self.player.sprite.lasers:
+                # obstacle collision
+                if pygame.sprite.spritecollide(laser,
+                                               self.blocks, dokill=True
+                                               ):
+                    laser.kill()
+                # alien collision
+                if pygame.sprite.spritecollide(laser,
+                                               self.alien, dokill=True
+                                               ):
+                    laser.kill()
+
+        # alien laser
+        if self.alien.sprite.lasers:
+            for laser in self.alien.sprite.lasers:
+                # obstacle collision
+                if pygame.sprite.spritecollide(laser,
+                                               self.blocks, dokill=False
+                                               ):
+                    laser.kill()
+
+                # player collision
+                if pygame.sprite.spritecollide(laser,
+                                               self.player, dokill=True
+                                               ):
+                    laser.kill()
+
     def run(self):
         'update/draw sprite groups'
         self.player.update()
+        self.alien.update()
+
         self.player.sprite.lasers.draw(screen)
+        self.alien.sprite.lasers.draw(screen)
+
         self.player.draw(screen)
         self.blocks.draw(screen)
         self.alien.draw(screen)
+        self.collision_check()
 
 
 def execute():
