@@ -1,10 +1,12 @@
 '''space invader'''
 import pygame
 from player import Player
+import obstacle
 
 
 class Game:
     def __init__(self):
+        # player setup
         player_sprite = Player(
             (SCREEN_WIDTH / 2, SCREEN_HEIGHT),
             SCREEN_WIDTH,
@@ -12,11 +14,29 @@ class Game:
         )
         self.player = pygame.sprite.GroupSingle(player_sprite)
 
+        # obstacle setup
+        self.shape = obstacle.shape
+        self.block_size = 6
+        self.blocks = pygame.sprite.Group()
+        self.create_obstacle(40, 480)
+
+    def create_obstacle(self, x_start, y_start):
+        for row_index, row in enumerate(self.shape):
+            for col_index, col in enumerate(row):
+                if col == 'x':
+
+                    x = x_start + col_index * self.block_size
+                    y = y_start + row_index * self.block_size
+                    block = obstacle.Block(self.block_size,
+                                           (241, 79, 80), x, y)
+                    self.blocks.add(block)
+
     def run(self):
         'update/draw sprite groups'
         self.player.update()
         self.player.sprite.lasers.draw(screen)
         self.player.draw(screen)
+        self.blocks.draw(screen)
 
 
 def execute():
