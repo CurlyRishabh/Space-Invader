@@ -1,5 +1,6 @@
 '''space invader'''
 import pygame
+from alien import Alien
 from player import Player
 import obstacle
 
@@ -30,6 +31,11 @@ class Game:
                                       offset=self.obstacle_x_positions
                                       )
 
+        # alien
+        alien_sprite = Alien((100, 100))
+        self.alien = pygame.sprite.GroupSingle()
+        self.alien.add(alien_sprite)
+
     def create_obstacle(self, x_start, y_start, offset_x):
         for row_index, row in enumerate(self.shape):
             for col_index, col in enumerate(row):
@@ -51,6 +57,7 @@ class Game:
         self.player.sprite.lasers.draw(screen)
         self.player.draw(screen)
         self.blocks.draw(screen)
+        self.alien.draw(screen)
 
 
 def execute():
