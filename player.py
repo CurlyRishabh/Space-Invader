@@ -21,7 +21,7 @@ class Player(pygame.sprite.Sprite):
         # variables for laser shoot
         self.ready = True
         self.laser_time = 0
-        self.laser_cooldown = 600
+        self.laser_cooldown = 60
 
         self.lasers = pygame.sprite.Group()
 

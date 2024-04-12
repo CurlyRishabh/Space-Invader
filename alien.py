@@ -14,7 +14,7 @@ class Alien(pygame.sprite.Sprite):
         self.cooldown = 1000
         self.x_constraint = x_constraint
         self.y_constraint = y_constraint
-        self.ready = True
+        self.ready = False
         self.laser_time = 0
         self.laser_cooldown = 600
         self.movement_state_x = True

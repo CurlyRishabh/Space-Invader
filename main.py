@@ -32,20 +32,8 @@ class Game:
                                       )
 
         # alien
-        alien_sprite = Alien("green",
-                             (100, 100),
-                             SCREEN_HEIGHT,
-                             SCREEN_WIDTH,
-                             )
-        alien_sprite2 = Alien("red",
-                              (150, 150),
-                              SCREEN_HEIGHT,
-                              SCREEN_WIDTH,
-                              )
-        
         self.alien = pygame.sprite.Group()
-        self.alien.add(alien_sprite)
-        self.alien.add(alien_sprite2)
+        self.create_alien()
 
     def create_obstacle(self, x_start, y_start, offset_x):
         for row_index, row in enumerate(self.shape):
@@ -62,12 +50,28 @@ class Game:
         for offset_x in offset:
             self.create_obstacle(x_start, y_start, offset_x)
 
+    # alien functions
+    def create_alien(self):
+        for i in range(4):
+            for j in range(3):
+                if j == 0:
+                    color = "green"
+                elif j == 1:
+                    color = "red"
+                elif j == 2:
+                    color = "yellow"
+                x = Alien(color, (100+(i*50), 100+(j*50)),
+                          SCREEN_HEIGHT,
+                          SCREEN_WIDTH)
+                self.alien.add(x)
+
     def update_alien_group(self):
         self.alien.update()
         self.alien.draw(screen)
         for alien in self.alien:
             alien.lasers.draw(screen)
 
+    # collision function
     def collision_check(self):
         # player laser
         if self.player.sprite.lasers:
@@ -93,15 +97,17 @@ class Game:
                                                dokill=True):
                     laser.kill()
 
-    def run(self): 
+    def run(self):
         'update/draw sprite groups'
+        # player update
         self.player.update()
-
         self.player.sprite.lasers.draw(screen)
         self.player.draw(screen)
+
         self.blocks.draw(screen)
-        
+
         self.update_alien_group()
+
         self.collision_check()
 
 
