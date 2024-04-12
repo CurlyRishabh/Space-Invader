@@ -1,6 +1,6 @@
 '''space invader'''
 import pygame
-from alien import Alien
+from alien import Alien, span_group_level
 from player import Player
 import obstacle
 
@@ -33,7 +33,22 @@ class Game:
 
         # alien
         self.alien = pygame.sprite.Group()
-        self.create_alien()
+        self.alien_row = 2
+        self.level = 0
+        self.create_level(0)
+
+        # health and score
+        self.live_surf = pygame.image.load('./graphics/player.png').convert_alpha()
+        self.live = 3
+        self.score = 0
+        self.font = pygame.font.Font('./font/Pixeled.ttf', 20)
+
+        # sound
+        music = pygame.mixer.Sound('./audio/music.wav')
+        music.set_volume(0.2)
+        music.play(loops=-1)
+        self.explosion_sound = pygame.mixer.Sound('./audio/explosion.wav')
+        self.explosion_sound.set_volume(0.4)
 
     def create_obstacle(self, x_start, y_start, offset_x):
         for row_index, row in enumerate(self.shape):
@@ -50,20 +65,21 @@ class Game:
         for offset_x in offset:
             self.create_obstacle(x_start, y_start, offset_x)
 
-    # alien functions
-    def create_alien(self):
-        for i in range(4):
-            for j in range(3):
-                if j == 0:
+    def create_level(self, level):
+        spawn_area = span_group_level[level]
+        color = ''
+        for row_index, row in enumerate(spawn_area):
+            for col_index, col in enumerate(row):
+                x = 100 + col_index * 50 + 50
+                y = 100 + row_index * 50
+                if col == 'g':
                     color = "green"
-                elif j == 1:
+                elif col == 'r':
                     color = "red"
-                elif j == 2:
+                elif col == 'y':
                     color = "yellow"
-                x = Alien(color, (100+(i*50), 100+(j*50)),
-                          SCREEN_HEIGHT,
-                          SCREEN_WIDTH)
-                self.alien.add(x)
+                alien = Alien(color, (x, y), SCREEN_HEIGHT, SCREEN_WIDTH)
+                self.alien.add(alien)
 
     def update_alien_group(self):
         self.alien.update()
@@ -82,33 +98,65 @@ class Game:
                                                ):
                     laser.kill()
                 # alien collision
-                if pygame.sprite.spritecollide(laser,
-                                               self.alien, dokill=True
-                                               ):
+                alien_hit = pygame.sprite.spritecollide(laser,
+                                                        self.alien,
+                                                        dokill=True)
+                if alien_hit:
+                    for alien in alien_hit:
+                        self.score += alien.value
+                        self.explosion_sound.play()
                     laser.kill()
-        #
+                if len(self.alien) == 0:
+                    self.level += 1
+                    self.create_level(self.level)
+        # alien laser
         for alien in self.alien:
             for laser in alien.lasers:
+                # obstacle collide
                 if pygame.sprite.spritecollide(laser, self.blocks,
                                                dokill=True):
                     laser.kill()
+                # player collide
                 if pygame.sprite.spritecollide(laser,
                                                self.player,
-                                               dokill=True):
+                                               dokill=False):
                     laser.kill()
+                    self.live -= 1
+                    self.explosion_sound.play()
+
+    def display_lives(self):
+        for live in range(self.live):
+            live_surf_rect = self.live_surf.get_rect(
+                topleft=(350 + live*80, 0)
+            )
+            screen.blit(self.live_surf, live_surf_rect)
+
+    def display_score(self):
+        score_surf = self.font.render(f'score: {self.score}', False, 'white')
+        score_rect = score_surf.get_rect(topleft=(0, 0))
+        screen.blit(score_surf, score_rect)
+
+    def game_over(self):
+        if self.live <= 0:
+            end_surf = self.font.render('GAME OVER', False, 'white')
+            end_rect = end_surf.get_rect(topleft=(200, 300))
+            screen.blit(end_surf, end_rect)
+            self.alien.empty()
+            self.player.empty()
 
     def run(self):
         'update/draw sprite groups'
         # player update
-        self.player.update()
-        self.player.sprite.lasers.draw(screen)
-        self.player.draw(screen)
-
-        self.blocks.draw(screen)
-
-        self.update_alien_group()
-
-        self.collision_check()
+        if self.player:
+            self.player.update()
+            self.player.sprite.lasers.draw(screen)
+            self.player.draw(screen)
+            self.blocks.draw(screen)
+            self.update_alien_group()
+            self.collision_check()
+            self.display_lives()
+        self.display_score()
+        self.game_over()
 
 
 def execute():
@@ -133,6 +181,6 @@ if __name__ == '__main__':
     SCREEN_WIDTH = 600
     SCREEN_HEIGHT = 600
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Some game")
+    pygame.display.set_caption("Space Invader")
     clock = pygame.time.Clock()
     execute()

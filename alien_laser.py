@@ -2,7 +2,7 @@ import pygame
 
 
 class Laser(pygame.sprite.Sprite):
-    def __init__(self, pos, speed=6, color='red'):
+    def __init__(self, pos, speed=4, color='red'):
         super().__init__()
         self.image = pygame.Surface((4, 20))
         self.image.fill(color)
@@ -11,7 +11,6 @@ class Laser(pygame.sprite.Sprite):
 
     def destroy(self):
         if self.rect.y >= 600:
-            print("kill_alien")
             self.kill()
 
     def update(self):

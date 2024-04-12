@@ -10,14 +10,19 @@ class Alien(pygame.sprite.Sprite):
         self.image = pygame.image.load(file_path).convert_alpha()
         self.rect = self.image.get_rect(center=pos)
         self.lasers = pygame.sprite.Group()
-        self.speed = 6
-        self.cooldown = 1000
+        self.speed = 2
         self.x_constraint = x_constraint
         self.y_constraint = y_constraint
-        self.ready = False
+        self.ready = True
         self.laser_time = 0
-        self.laser_cooldown = 600
+        self.laser_cooldown = 2000
         self.movement_state_x = True
+        if color == 'red':
+            self.value = 100
+        elif color == 'green':
+            self.value = 200
+        else:
+            self.value = 300
 
     def movement_x(self):
         if self.movement_state_x:
@@ -56,3 +61,28 @@ class Alien(pygame.sprite.Sprite):
         self.movement_x()
         self.constraint()
         self.lasers.update()
+
+
+span_group_level = [
+    [
+        "rrrr",
+        'yggy',
+        'yyyy'
+    ],
+    [
+        "yyyyy",
+        'ygggy',
+        'yyyyy'
+    ],
+    [
+        "rrrrrrrr",
+        'rrryyyrr',
+        'gggggggg'
+    ],
+    [
+        'rgrgrgrgrgrgr',
+        '  rr  rr  rr ',
+        ' yyyyyyyyyyyy',
+        'gggg      ggg'
+    ]
+]
