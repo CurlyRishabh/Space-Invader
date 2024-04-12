@@ -5,7 +5,8 @@ from alien_laser import Laser
 class Alien(pygame.sprite.Sprite):
     def __init__(self, color, pos, x_constraint, y_constraint):
         super().__init__()
-        file_path = './graphics/'+color+'.png'
+        self.color = color
+        file_path = './graphics/'+self.color+'.png'
         self.image = pygame.image.load(file_path).convert_alpha()
         self.rect = self.image.get_rect(center=pos)
         self.lasers = pygame.sprite.Group()
@@ -25,7 +26,7 @@ class Alien(pygame.sprite.Sprite):
             self.rect.x -= self.speed
 
     def shoot_laser(self):
-        self.lasers.add(Laser(self.rect.center, color='green'))
+        self.lasers.add(Laser(self.rect.center, color=self.color))
         self.ready = False
         self.laser_time = pygame.time.get_ticks()
 

@@ -35,9 +35,17 @@ class Game:
         alien_sprite = Alien("green",
                              (100, 100),
                              SCREEN_HEIGHT,
-                             SCREEN_WIDTH)
-        self.alien = pygame.sprite.GroupSingle()
+                             SCREEN_WIDTH,
+                             )
+        alien_sprite2 = Alien("red",
+                              (150, 150),
+                              SCREEN_HEIGHT,
+                              SCREEN_WIDTH,
+                              )
+        
+        self.alien = pygame.sprite.Group()
         self.alien.add(alien_sprite)
+        self.alien.add(alien_sprite2)
 
     def create_obstacle(self, x_start, y_start, offset_x):
         for row_index, row in enumerate(self.shape):
@@ -54,6 +62,12 @@ class Game:
         for offset_x in offset:
             self.create_obstacle(x_start, y_start, offset_x)
 
+    def update_alien_group(self):
+        self.alien.update()
+        self.alien.draw(screen)
+        for alien in self.alien:
+            alien.lasers.draw(screen)
+
     def collision_check(self):
         # player laser
         if self.player.sprite.lasers:
@@ -68,33 +82,26 @@ class Game:
                                                self.alien, dokill=True
                                                ):
                     laser.kill()
-
-        # alien laser
-        if self.alien.sprite.lasers:
-            for laser in self.alien.sprite.lasers:
-                # obstacle collision
+        #
+        for alien in self.alien:
+            for laser in alien.lasers:
+                if pygame.sprite.spritecollide(laser, self.blocks,
+                                               dokill=True):
+                    laser.kill()
                 if pygame.sprite.spritecollide(laser,
-                                               self.blocks, dokill=False
-                                               ):
+                                               self.player,
+                                               dokill=True):
                     laser.kill()
 
-                # player collision
-                if pygame.sprite.spritecollide(laser,
-                                               self.player, dokill=True
-                                               ):
-                    laser.kill()
-
-    def run(self):
+    def run(self): 
         'update/draw sprite groups'
         self.player.update()
-        self.alien.update()
 
         self.player.sprite.lasers.draw(screen)
-        self.alien.sprite.lasers.draw(screen)
-
         self.player.draw(screen)
         self.blocks.draw(screen)
-        self.alien.draw(screen)
+        
+        self.update_alien_group()
         self.collision_check()
 
 
