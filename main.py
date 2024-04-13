@@ -34,18 +34,20 @@ class Game:
         # alien
         self.alien = pygame.sprite.Group()
         self.alien_row = 2
-        self.level = 0
         self.create_level(0)
+        self.level = 0
+        self.max_level = len(span_group_level)-1
 
         # health and score
-        self.live_surf = pygame.image.load('./graphics/player.png').convert_alpha()
+        self.live_surf = pygame.image.load(
+            './graphics/player.png').convert_alpha()
         self.live = 3
         self.score = 0
         self.font = pygame.font.Font('./font/Pixeled.ttf', 20)
 
         # sound
         music = pygame.mixer.Sound('./audio/music.wav')
-        music.set_volume(0.2)
+        music.set_volume(0.8)
         music.play(loops=-1)
         self.explosion_sound = pygame.mixer.Sound('./audio/explosion.wav')
         self.explosion_sound.set_volume(0.4)
@@ -108,6 +110,8 @@ class Game:
                     laser.kill()
                 if len(self.alien) == 0:
                     self.level += 1
+                    if self.level > self.max_level:
+                        self.level = 0
                     self.create_level(self.level)
         # alien laser
         for alien in self.alien:

@@ -84,5 +84,10 @@ span_group_level = [
         '  rr  rr  rr ',
         ' yyyyyyyyyyyy',
         'gggg      ggg'
-    ]
+    ],
+    ['rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr',
+     'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+     'ggggggggggggggggggggggggggggggg',
+     'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy'
+     ]
 ]
